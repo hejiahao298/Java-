@@ -1,5 +1,5 @@
 # typora
-pid编译测试
+用makerdown写下的JAVA基础笔记
 ## java
 ```Java
 public static viod mian(String[] args){}
