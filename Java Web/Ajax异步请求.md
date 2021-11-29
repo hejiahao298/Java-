@@ -6,7 +6,7 @@
 
 ### Ajax原理
 
-![](![](https://raw.githubusercontent.com/hejiahao298/Myimg/master/1.png))
+![](https://raw.githubusercontent.com/hejiahao298/Myimg/master/1.png)
 
 
 
