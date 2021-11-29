@@ -10,7 +10,7 @@ Java DataBase Connectivity 是⼀个独⽴于特定数据库的管理系统，�
 > >
 > > ⾯向数据库的 API，供⼚商开发数据库的驱动程序
 
-![JDBC原理](https://raw.githubusercontent.com/hejiahao298/Myimg/master/2.png)
+![JDBC原理](https://raw.githubusercontent.com/hejiahao298/Myimg/master/2.png){:height="200px" width="50%"}
 
 ### JDBC API
 
