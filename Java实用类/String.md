@@ -31,7 +31,7 @@ public class String{
   System.out.printl（"str1 == str2" : str1 == str2 ) //true 
 ```
 
-![Image](E:\学习/medley/resources/BJbKCBykUt_ry52O1J8F.png)
+![](https://raw.githubusercontent.com/hejiahao298/Myimg/master/String.png)
 
 **1. 堆**
 - 存储的是对象，每个对象都包含一个与之对应的class
