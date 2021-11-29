@@ -6,7 +6,7 @@ ForkJoin 是 JDK 1.7 后发布的多线程并发处理框架，功能上和 JUC 
 本质上是对线程池的⼀种的补充，对线程池功能的⼀种扩展，基于线程池的，它的核⼼思想就是将⼀个
 ⼤型的任务拆分成很多个⼩任务，分别执⾏，最终将⼩任务的结果进⾏汇总，⽣成最终的结果。
 
-![Image](E:\学习/medley/resources/rkBfTWgHt_ryoY6-xSY.png)
+![](https://raw.githubusercontent.com/hejiahao298/Myimg/master/ForkJoin1.png)
 
 本质就是把⼀个线程的任务拆分成多个⼩任务，然后由多个线程并发执⾏，最终将结果进⾏汇总。
 **工作窃取**
@@ -21,7 +21,7 @@ ForkJoin 框架，核⼼是两个类
 化对象，开发者需要⾃定义⼀个类，继承 ForkJoinTask 的⼦类 RecursiveTask ，Recursive 就是递归的
 意思，该类就提供了实现递归的功能。
 
-![Image](E:\学习/medley/resources/rkBfTWgHt_HyvApZeBY.png)
+![](https://raw.githubusercontent.com/hejiahao298/Myimg/master/ForkJoin2.png)
 
 ```java
 /**
