@@ -21,7 +21,7 @@ Java 并发编程⼯具包，Java 官⽅提供的⼀套专⻔⽤来处理并发�
 实现 Runnable 的耦合度更低
 
 - lambel表达式
-![Image](E:\学习/medley/resources/r1fWWuimF_Hy-fMdoXF.png)
+![](https://raw.githubusercontent.com/hejiahao298/Myimg/master/ReentranLock.png)
 
 ```java
 public class Test {
