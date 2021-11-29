@@ -3,7 +3,7 @@
 ### **Object(超类)**
 ### **1. 基于"字节"操作的 I/O 接口:**
 ###     **1) InputStream**
-![Image](E:\学习/medley/resources/BJsMPCLIY_rk4mORIIY.png)
+![](https://raw.githubusercontent.com/hejiahao298/Myimg/master/InputStream.png)
 
     InputStream类是一个abstract class(抽象父类)，它不能被直接用于实例化进行流操作，我们在编程中使用的是它的子类
         1.1) ByteArrayInputStream: 从字节数组(byte[])中进行以字节为单位的读取
@@ -24,7 +24,7 @@
         
         
 ###     **2) OutputStream**
-![Image](E:\学习/medley/resources/BJsMPCLIY_SJgVORUIK.png)
+![](https://raw.githubusercontent.com/hejiahao298/Myimg/master/OutputStream.png)
 
     OutputStream类是一个abstract class(抽象父类)，它不能被直接用于实例化进行流操作，我们在编程中使用的是它的子类
         2.1) ByteArrayOutputStream: 以字节为单位将数据写入到从字节数组(byte[])中 
@@ -48,7 +48,7 @@
 中的一个很重要的概念，包装(装饰)。即所有的流操作在底层实现都是字节流的形式，以这个底层字节流为基础，在其上封装了各种"附加功能"(缓存、字符、管道..)
 
 ###     **1) Reader**
-![Image](E:\学习/medley/resources/BJsMPCLIY_rylHO0IIK.png)
+![](https://raw.githubusercontent.com/hejiahao298/Myimg/master/Reader.png)
 
     Reader类是一个abstract class(抽象父类)，它不能被直接用于实例化进行流操作，我们在编程中使用的是它的子类
         1.1) InputStreamReader:
@@ -67,7 +67,7 @@
         
         
 ### 　　    **2) Writer**
-![Image](E:\学习/medley/resources/BJsMPCLIY_rkr8ORLUF.png)
+![](https://raw.githubusercontent.com/hejiahao298/Myimg/master/Writer.png)
 
    　　 Writer类是一个abstract class(抽象父类)，它不能被直接用于实例化进行流操作，我们在编程中使用的是它的子类
         2.1) OutputStreamWriter:
