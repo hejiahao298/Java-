@@ -3,7 +3,7 @@
 是 JVM 提供的轻量级同步机制，可⻅性，主内存对象线程可⻅。
 ⼀个线程执⾏完任务之后还，会把变量存回到主内存中，并且从主内存中读取当前最新的值，如果是⼀个空的任务，则不会重新读取主内存中的值。
 
-![Image](E:\学习/medley/resources/SJWEJzxrK_Hka7lMeHF.png)
+![](https://raw.githubusercontent.com/hejiahao298/Myimg/master/JUC.png)
 
 ```java
 import java.util.concurrent.TimeUnit;
