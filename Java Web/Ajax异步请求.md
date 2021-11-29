@@ -6,7 +6,7 @@
 
 ### Ajax原理
 
-![](..\img\QQ截图20211128155455.png)
+![](![](https://raw.githubusercontent.com/hejiahao298/Myimg/master/1.png))
 
 
 
