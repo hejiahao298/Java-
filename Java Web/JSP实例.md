@@ -1,4 +1,4 @@
-# 实例
+# JSP实例
 运用了EL+JSTL+Servlet
 
 ### User class
