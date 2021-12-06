@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="MVCPattern:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>MVCPattern</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="MVCPattern-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="MVCPattern:war exploded" />
+    </root>
+  </artifact>
+</component>
