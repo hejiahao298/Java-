@@ -297,18 +297,102 @@ public class ClassPathXmlApplicationContext implements ApplicationContext{
 
 ### scope 作用域
 
-Spring 管理的 bean 是根据 scope 来生成的，表示 bean 的作用域，共4种，默认值是 singleton。
+Spring 管理的 bean 是根据 scope 来生成的，表示 bean 的作用域，共4种，默认值是 singleton。 
 
-- singleton：单例，表示通过 IoC 容器获取的 bean 是唯一的。
-- prototype：原型，表示通过 IoC 容器获取的 bean 是不同的。
-- request：请求，表示在一次 HTTP 请求内有效。
-- session：回话，表示在一个用户会话内有效。
+ | 作用域         | 描述                                                         |
+  | -------------- | ------------------------------------------------------------ |
+  | singleton      | 在spring IoC容器仅存在一个Bean实例，Bean以单例方式存在，默认值 |
+  | prototype      | 每次从容器中调用Bean时，都返回一个新的实例，即每次调用getBean()时，相当于执行newXxxBean() |
+  | request        | 每次HTTP请求都会创建一个新的Bean，该作用域仅适用于WebApplicationContext环境 |
+  | session        | 同一个HTTP Session共享一个Bean，不同Session使用不同的Bean，仅适用于WebApplicationContext环境 |
+  | global-session | 一般用于Portlet应用环境，该作用域仅适用于WebApplicationContext环境 |
 
-request 和 session 只适用于 Web 项目，大多数情况下，使用单例和原型较多。
 
-prototype 模式当业务代码获取 IoC 容器中的 bean 时，Spring 才去调用无参构造创建对应的 bean。
 
-singleton 模式无论业务代码是否获取 IoC 容器中的 bean，Spring 在加载 spring.xml 时就会创建 bean。
+### Bean的生命周期
+
+```java
+package com.tutorialspoint;
+
+public class HelloWorld {
+   private String message;
+
+   public void setMessage(String message){
+      this.message  = message;
+   }
+   public void getMessage(){
+      System.out.println("Your Message : " + message);
+   }
+   public void init(){
+      System.out.println("Bean is going through init.");
+   }
+   public void destroy(){
+      System.out.println("Bean will destroy now.");
+   }
+}
+```
+
+下面是 **MainApp.java** 文件的内容。在这里，你需要注册一个在 AbstractApplicationContext 类中声明的关闭 hook 的 **registerShutdownHook()** 方法。它将确保正常关闭，并且调用相关的 destroy 方法。
+
+```java
+package com.tutorialspoint;
+import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+public class MainApp {
+   public static void main(String[] args) {
+      AbstractApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
+      HelloWorld obj = (HelloWorld) context.getBean("helloWorld");
+      obj.getMessage();
+      context.registerShutdownHook();
+   }
+}
+```
+
+下面是 init 和 destroy 方法必需的配置文件 **Beans.xml** 文件：
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+   <bean id="helloWorld" 
+       class="com.tutorialspoint.HelloWorld"
+       init-method="init" destroy-method="destroy">
+       <property name="message" value="Hello World!"/>
+   </bean>
+
+</beans>
+```
+
+一旦你创建源代码和 bean 配置文件完成后，我们就可以运行该应用程序。如果你的应用程序一切都正常，将输出以下信息：
+
+```
+Bean is going through init.
+Your Message : Hello World!
+Bean will destroy now.
+```
+
+## 默认的初始化和销毁方法
+
+如果你有太多具有相同名称的初始化或者销毁方法的 Bean，那么你不需要在每一个 bean 上声明**初始化方法**和**销毁方法**。框架使用 元素中的 **default-init-method** 和 **default-destroy-method** 属性提供了灵活地配置这种情况，如下所示：
+
+```java
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+    default-init-method="init" 
+    default-destroy-method="destroy">
+
+   <bean id="..." class="...">
+       <!-- collaborators and configuration for this bean go here -->
+   </bean>
+
+</beans>
+```
 
 
 
@@ -350,7 +434,7 @@ p 命名空间是对 IoC / DI 的简化操作，使用 p 命名空间可以更�
 
 
 
-Spring 的工厂方法
+### Spring 的工厂方法
 
 ```xml
 <!-- 配置实例工厂 bean -->
@@ -676,3 +760,252 @@ public static Object newProxyInstance(ClassLoader loader,
     }
 ```
 
+
+
+## Spring基于注解的配置
+
+## 基于注解的配置
+
+从 Spring 2.5 开始就可以使用**注解**来配置依赖注入。而不是采用 XML 来描述一个 bean 连线，你可以使用相关类，方法或字段声明的注解，将 bean 配置移动到组件类本身。
+
+在 XML 注入之前进行注解注入，因此后者的配置将通过两种方式的属性连线被前者重写。
+
+注解连线在默认情况下在 Spring 容器中不打开。因此，在可以使用基于注解的连线之前，我们将需要在我们的 Spring 配置文件中启用它。所以如果你想在 Spring 应用程序中使用的任何注解，可以考虑到下面的配置文件。
+
+
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+   <context:annotation-config/>
+   <!-- bean definitions go here -->
+
+</beans>
+```
+
+一旦 被配置后，你就可以开始注解你的代码，表明 Spring 应该自动连接值到属性，方法和构造函数。让我们来看看几个重要的注解，并且了解它们是如何工作的：
+
+| 序号 | 注解 & 描述                                                  |
+| ---- | ------------------------------------------------------------ |
+| 1    | [@Required](https://www.w3cschool.cn/wkspring/9sle1mmh.html)@Required 注解应用于 bean 属性的 setter 方法。 |
+| 2    | [@Autowired](https://www.w3cschool.cn/wkspring/rw2h1mmj.html)@Autowired 注解可以应用到 bean 属性的 setter 方法，非 setter 方法，构造函数和属性。 |
+| 3    | [@Qualifier](https://www.w3cschool.cn/wkspring/knqr1mm2.html)通过指定确切的将被连线的 bean，@Autowired 和 @Qualifier 注解可以用来删除混乱。 |
+| 4    | [JSR-250 Annotations](https://www.w3cschool.cn/wkspring/lmsq1mm4.html)Spring 支持 JSR-250 的基础的注解，其中包括了 @Resource，@PostConstruct 和 @PreDestroy 注解。 |
+
+
+
+### @Required
+
+**@Required** 注解应用于 bean 属性的 setter 方法，它表明受影响的 bean 属性在配置时必须放在 XML 配置文件中，否则容器就会抛出一个 BeanInitializationException 异常。下面显示的是一个使用 @Required 注解的示例。否则就会抛出如下异常
+
+>  Property 'age' is required for bean 'student'
+
+
+
+### @AutoWired
+
+ @Autowired 注解这个注解的功能就是为我们注入一个定义好的 bean。无论是字段，方法的参数，@Autowired都会从IOC容器中寻找合适的bean
+
+```java
+public class  MovieRecommender {
+private final CustomerPreferenceDao customerPreferenceDao;
+// @Autowired注解：会自动从IOC容器中寻找到CustomerPreferenceDao类型的
+@Autowired
+public MovieRecommender(CustomerPreferenceDao customerPreferenceDao) {
+    this.customerPreferenceDao = customerPreferenceDao;
+}
+    
+@Autowired
+public void setMovieFinder(MovieFinder movieFinder) {
+        this.movieFinder = movieFinder;
+}
+    
+@Autowired
+public void prepare(MovieCatalog movieCatalog,
+                    CustomerPreferenceDao customerPreferenceDao) {
+        this.movieCatalog = movieCatalog;
+        this.customerPreferenceDao = customerPreferenceDao;
+}
+  
+}
+```
+
+
+
+
+### @Qualifier 注解
+
+可能会有这样一种情况，当你创建多个具有相同类型的 bean 时，并且想要用一个属性只为它们其中的一个进行装配，在这种情况下，你可以使用 **@Qualifier** 注解和 **@Autowired** 注解通过指定哪一个真正的 bean 将会被装配来消除混乱。下面显示的是使用 @Qualifier 注解的一个示例。
+
+```java
+public class Profile {
+   @Autowired
+   @Qualifier("student1")
+   private Student student;
+   public Profile(){
+      System.out.println("Inside Profile constructor." );
+   }
+   public void printAge() {
+      System.out.println("Age : " + student.getAge() );
+   }
+   public void printName() {
+      System.out.println("Name : " + student.getName() );
+   }
+}
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+   <context:annotation-config/>
+
+   <!-- Definition for profile bean -->
+   <bean id="profile" class="com.tutorialspoint.Profile">
+   </bean>
+
+   <!-- Definition for student1 bean -->
+   <bean id="student1" class="com.tutorialspoint.Student">
+      <property name="name"  value="Zara" />
+      <property name="age"  value="11"/>
+   </bean>
+
+   <!-- Definition for student2 bean -->
+   <bean id="student2" class="com.tutorialspoint.Student">
+      <property name="name"  value="Nuha" />
+      <property name="age"  value="2"/>
+   </bean>
+
+</beans>
+```
+
+
+
+### @Resource 注释：
+
+你可以在字段中或者 setter 方法中使用 **@Resource** 注释，它和在 Java EE 5 中的运作是一样的。@Resource 注释使用一个 ‘name’ 属性，该属性以一个 bean 名称的形式被注入。你可以说，它遵循 **by-name** 自动连接语义，如下面的示例所示：
+
+```java
+public class TextEditor {
+   private SpellChecker spellChecker;
+   @Resource(name= "spellChecker")
+   public void setSpellChecker( SpellChecker spellChecker ){
+      this.spellChecker = spellChecker;
+   }
+   public SpellChecker getSpellChecker(){
+      return spellChecker;
+   }
+   public void spellCheck(){
+      spellChecker.checkSpelling();
+   }
+}
+```
+
+
+
+### @Configuration , @Bean 
+
+带有 **@Configuration** 的注解类表示这个类可以使用 Spring IoC 容器作为 bean 定义的来源。**@Bean** 注解告诉 Spring，一个带有 @Bean 的注解方法将返回一个对象，该对象应该被注册为在 Spring 应用程序上下文中的 bean。最简单可行的 @Configuration 类如下所示：
+
+```java
+package com.tutorialspoint;
+import org.springframework.context.annotation.*;
+@Configuration
+public class HelloWorldConfig {
+   @Bean 
+   public HelloWorld helloWorld(){
+      return new HelloWorld();
+   }
+}
+```
+
+等同于
+
+```xml
+<beans>
+   <bean id="helloWorld" class="com.tutorialspoint.HelloWorld" />
+</beans>
+
+```
+
+在这里，带有 @Bean 注解的方法名称作为 bean 的 ID，它创建并返回实际的 bean。你的配置类可以声明多个 @Bean。一旦定义了配置类，你就可以使用 *AnnotationConfigApplicationContext* 来加载并把他们提供给 Spring 容器，如下所示：
+
+```java
+public static void main(String[] args) {
+   ApplicationContext ctx = 
+   new AnnotationConfigApplicationContext(HelloWorldConfig.class); 
+   HelloWorld helloWorld = ctx.getBean(HelloWorld.class);
+   helloWorld.setMessage("Hello World!");
+   helloWorld.getMessage();
+}
+```
+
+你可以加载各种配置类，如下所示：
+
+```java
+public static void main(String[] args) {
+   AnnotationConfigApplicationContext ctx = 
+   new AnnotationConfigApplicationContext();
+   ctx.register(AppConfig.class, OtherConfig.class);
+   ctx.register(AdditionalConfig.class);
+   ctx.refresh();
+   MyService myService = ctx.getBean(MyService.class);
+   myService.doStuff();
+}
+```
+
+
+
+### @Import 注解:
+
+**@import** 注解允许从另一个配置类中加载 @Bean 定义。考虑 ConfigA 类，如下所示：
+
+```java
+@Configuration
+public class ConfigA {
+   @Bean
+   public A a() {
+      return new A(); 
+   }
+}
+```
+
+你可以在另一个 Bean 声明中导入上述 Bean 声明，如下所示：
+
+```java
+@Configuration
+@Import(ConfigA.class)
+public class ConfigB {
+   @Bean
+   public B b() {
+      return new B(); 
+   }
+}
+```
+
+现在，当实例化上下文时，不需要同时指定 ConfigA.class 和 ConfigB.class，只有 ConfigB 类需要提供，如下所示：
+
+```java
+public static void main(String[] args) {
+   ApplicationContext ctx = 
+   new AnnotationConfigApplicationContext(ConfigB.class);
+   // now both beans A and B will be available...
+   A a = ctx.getBean(A.class);
+   B b = ctx.getBean(B.class);
+}
+```
